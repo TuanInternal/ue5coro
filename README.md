@@ -4,6 +4,9 @@ These plugins implement C\+\+
 [coroutines](https://en.cppreference.com/w/cpp/language/coroutines) for
 Unreal Engine 5 with a focus on gameplay logic and BP integration.
 
+> [!NOTE]
+> You're looking at UE5Coro 1. UE5Coro 2.0 is on a different branch.
+
 ## Installation
 
 Download the release that you wish to use from the
