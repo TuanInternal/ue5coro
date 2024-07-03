@@ -1,10 +1,21 @@
 # UE5Coro
 
 > [!WARNING]
-> You're reading the documentation of UE5Coro 2.
+> This is the readme of the 2.0 preview.
+>
 > Support for C++17 with the Coroutines TS and older versions of Unreal, going
 > back as far as 5.0, is available in UE5Coro 1, starting from version 1.5.
 > Please refer to the documentation of your chosen version for instructions.
+
+# ⚠️ MSVC 14.41 IS REQUIRED! ⚠️
+
+Known issues:
+* MSVC ignores certain ContinueWith overloads and fails to build (fixed in 14.41)
+* Clang (LLVM 17, 18) crashes when building for Windows
+* Clang skips the first parameter when processing coroutine lambdas.
+  There is a test file designed to catch this bug at compile time.
+
+---
 
 UE5Coro implements C++20
 [coroutine](https://en.cppreference.com/w/cpp/language/coroutines) support for
