@@ -32,12 +32,15 @@
 #include "UE5CoroGAS/UE5CoroGameplayAbility.h"
 #include "GameplayTask.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
+#include "Logging/StructuredLog.h"
 #include "UE5CoroTaskCallbackTarget.h"
 #include "UE5Coro/LatentAwaiter.h"
 
 using namespace UE5Coro;
 using namespace UE5Coro::Private;
 using namespace UE5CoroGAS::Private;
+
+DEFINE_LOG_CATEGORY_STATIC(LogUE5CoroGAS, Warning, Warning);
 
 namespace
 {
@@ -197,11 +200,17 @@ void UUE5CoroGameplayAbility::EndAbility(
 	                  bWasCanceled);
 
 	auto PredictionKey = ActivationInfo.GetActivationPredictionKey();
+	UE_LOGFMT(LogUE5CoroGAS, Warning, "[UE5CoroGAS Temp] End {0}",
+	          PredictionKey.ToString());
 	if (!PredictionKey.IsValidKey())
 		return;
 
 	TAbilityPromise<ThisClass>* Promise;
+	auto OldCount = Activations->Num();
 	bool bFound = Activations->RemoveAndCopyValue(PredictionKey, Promise);
+	auto NewCount = Activations->Num();
+	UE_LOGFMT(LogUE5CoroGAS, Warning, "[UE5CoroGAS Temp] Activations {0}->{1}",
+	          OldCount, NewCount);
 
 	// Nothing to do if the coroutine has ended already
 	if (bCoroutineEnded)
@@ -224,6 +233,8 @@ void UUE5CoroGameplayAbility::CoroutineStarting(TAbilityPromise<ThisClass>* Prom
 	       TEXT("Internal error: expected coroutine on the game thread"));
 	checkf(GCurrentPredictionKey.IsValidKey(),
 	       TEXT("Attempting to start ability with invalid prediction key"));
+	UE_LOGFMT(LogUE5CoroGAS, Warning, "[UE5CoroGAS Temp] Start {0}",
+	          GCurrentPredictionKey.ToString());
 	checkf(!Activations->Contains(GCurrentPredictionKey),
 	       TEXT("Overlapping ability activations with the same prediction key"));
 	// The promise object is not fully constructed yet, but its address is known
